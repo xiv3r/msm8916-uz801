@@ -80,3 +80,6 @@ EOF
 bash /install_dnsproxy.sh
 
 systemctl mask systemd-networkd-wait-online.service
+
+# Prevent the accidental shutdown by power button
+sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf

@@ -77,6 +77,7 @@ Edit [`scripts/setup.sh`](scripts/setup.sh) to add/remove packages. Note that th
   ```
 
 ### Steps
+- Ensure that your device is running the stock firmware
 - Enter Qualcom EDL mode using this [guide](https://wiki.postmarketos.org/wiki/Zhihe_series_LTE_dongles_(generic-zhihe)#How_to_enter_flash_mode)
 - Backup required partitions
 
