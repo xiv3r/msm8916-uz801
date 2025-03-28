@@ -1,7 +1,7 @@
 # OpenStick Image Builder
 Image builder for MSM8916 based 4G modem dongles
 
-This builder uses the precompiled [kernel](https://pkgs.postmarketos.org/package/v24.06/postmarketos/aarch64/linux-postmarketos-qcom-msm8916) provided by [postmarketOS](https://postmarketos.org/) for Qualcomm MSM8916 devices.
+This builder uses the precompiled [kernel](https://pkgs.postmarketos.org/package/master/postmarketos/aarch64/linux-postmarketos-qcom-msm8916) provided by [postmarketOS](https://postmarketos.org/) for Qualcomm MSM8916 devices.
 
 > [!NOTE]
 > This branch generates a `debian` image, use the [alpine branch](https://github.com/kinsamanka/OpenStick-Builder/tree/alpine) for an `alpine` image.
@@ -11,7 +11,7 @@ This builder uses the precompiled [kernel](https://pkgs.postmarketos.org/package
 This has been tested to work on **Ubuntu 22.04**
 - clone
   ```shell
-  git clone --recurse-submodules https://github.com/kinsamanka/OpenStick-Builder.git
+  git clone --recurse-submodules https://github.com/LongQT-sea/OpenStick-Builder.git
   cd OpenStick-Builder/
   ```
 #### Quick
@@ -70,7 +70,7 @@ Edit [`scripts/setup.sh`](scripts/setup.sh) to add/remove packages. Note that th
 > Make sure to perform a backup of the original firmware using the command `edl rf orig_fw.bin`
 
 ### Prerequisites
-- [EDL](https://github.com/bkerler/ed)
+- [EDL](https://github.com/bkerler/edl)
 - Android fastboot tool
   ```
   sudo apt install fastboot
@@ -81,7 +81,7 @@ Edit [`scripts/setup.sh`](scripts/setup.sh) to add/remove packages. Note that th
 - Backup required partitions
 
   The following files are required from the original firmware:
-  
+
      - `fsc.bin`
      - `fsg.bin`
      - `modem.bin`
@@ -130,15 +130,11 @@ Edit [`scripts/setup.sh`](scripts/setup.sh) to add/remove packages. Note that th
 ## Post-Install
 - Network configuration
   
-  | wlan0 | |
+  |  | |
   | ----- | ---- |
-  | ssid | Openstick |
-  | password | openstick |
-  | ip addr | 192.168.4.1 |
-
-  | usb0 | |
-  | ----- | ---- |
-  | ip addr | 192.168.5.1 |
+  | ssid | 4G-UFI-XX |
+  | password | 1234567890 |
+  | ip addr | 192.168.100.1 |
 
 - Default user
   
@@ -158,15 +154,11 @@ Edit [`scripts/setup.sh`](scripts/setup.sh) to add/remove packages. Note that th
      - `jz01-45-v33` for **JZxxx** boards
      - `fy-mf800` for **MF800** boards
 
-- To maximize the `rootfs` partition
-  ```shell
-  resize2fs /dev/disk/by-partlabel/rootfs
-  ```
 
 - To update the kernel of the `debian` image
+- Get the kernel link from: http://mirror.postmarketos.org/postmarketos/master/aarch64/
+
   ```shell
-  wget -O - http://mirror.postmarketos.org/postmarketos/<branch>/aarch64/linux-postmarketos-qcom-msm8916-<version>.apk \
+  wget -O - http://mirror.postmarketos.org/postmarketos/master/aarch64/linux-postmarketos-qcom-msm8916-6.12.1-r2.apk \
           | tar xkzf - -C / --exclude=.PKGINFO --exclude=.SIGN* 2>/dev/null
   ```
-
-  Specify the correct `<branch>` and `<version>` values.
