@@ -44,6 +44,11 @@ sed -i "/localhost/ s/$/ ${HOST_NAME}/" ${CHROOT}/etc/hosts
 
 # setup dnsmasq
 cp -a configs/dhcp.conf ${CHROOT}/etc/dnsmasq.d/dhcp.conf
+cat <<EOF >> /etc/resolv.conf
+search lan
+nameserver 127.0.0.1
+EOF
+
 cat <<EOF >> ${CHROOT}/etc/hosts
 
 192.168.100.1	${HOST_NAME} ${HOST_NAME}.lan
