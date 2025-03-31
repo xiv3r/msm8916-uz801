@@ -44,9 +44,10 @@ sed -i "/localhost/ s/$/ ${HOST_NAME}/" ${CHROOT}/etc/hosts
 
 # setup dnsmasq
 cp -a configs/dhcp.conf ${CHROOT}/etc/dnsmasq.d/dhcp.conf
-cat <<EOF >> /etc/resolv.conf
+cat <<EOF > ${CHROOT}/etc/resolv.conf
 search lan
 nameserver 127.0.0.1
+options edns0 trust-ad
 EOF
 
 cat <<EOF >> ${CHROOT}/etc/hosts
