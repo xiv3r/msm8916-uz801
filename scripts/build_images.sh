@@ -2,6 +2,12 @@
 
 CHROOT=${CHROOT=$(pwd)/rootfs}
 
+cat <<EOF > ${CHROOT}/etc/resolv.conf
+search lan
+nameserver 127.0.0.1
+options edns0 trust-ad
+EOF
+
 #package rootfs
 rm -f rootfs.raw boot.raw
 mkdir -p files mnt
