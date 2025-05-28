@@ -14,7 +14,10 @@ mode=ap
 ssid=4G-UFI-XX
 
 [wifi-security]
+group=ccmp;
 key-mgmt=wpa-psk
+pairwise=ccmp;
+proto=rsn;
 psk=1234567890
 
 [ipv4]

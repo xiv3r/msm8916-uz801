@@ -53,7 +53,7 @@ EOF
 
 cat <<EOF >> ${CHROOT}/etc/hosts
 
-192.168.100.1	${HOST_NAME} ${HOST_NAME}.lan
+192.168.100.1	${HOST_NAME}
 EOF
 
 # add rc-local
