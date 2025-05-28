@@ -1,7 +1,8 @@
 [Unit]
 Description=Login shell on %I
-After=mobile-usb-gadget.service
-Requires=mobile-usb-gadget.service
+Requires=msm8916-usb-gadget.service
+After=msm8916-usb-gadget.service
+BindsTo=msm8916-usb-gadget.service
 
 [Service]
 ExecStart=-/sbin/agetty --autologin root -L %I 115200 vt100

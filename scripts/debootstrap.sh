@@ -63,8 +63,9 @@ chmod +x ${CHROOT}/etc/rc.local
 # add interfaces (ifupdown2)
 cp -a configs/interfaces ${CHROOT}/etc/network/
 
-# add USB gadget script (RNDIS/ACM for Windows, ECM/ACM for Linux/MacOS)
-cp -a configs/mobile-usb-gadget.sh ${CHROOT}/usr/sbin/mobile-usb-gadget.sh
+# add MSM8916 USB gadget
+cp -a configs/msm8916-usb-gadget.sh ${CHROOT}/usr/sbin/
+cp configs/msm8916-usb-gadget.conf ${CHROOT}/etc/
 
 # setup systemd services
 cp -a configs/system/* ${CHROOT}/etc/systemd/system
