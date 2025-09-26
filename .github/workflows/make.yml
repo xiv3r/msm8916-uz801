@@ -1,0 +1,52 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+  schedule:
+    - cron: '0 2 * * 0'  # Run every Sunday at 2 AM UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install dependencies
+        run: sudo sh -e scripts/install_deps.sh
+
+      - name: Build hyp and aboot firmware
+        run: sudo sh -e scripts/build_hyp_aboot.sh
+
+      - name: Extract firmware
+        run: sudo sh -e scripts/extract_fw.sh
+
+      - name: Create rootfs
+        run: sudo sh -e scripts/debootstrap.sh
+
+      - name: Build gadget-tool
+        run: sudo sh -e scripts/build_gt.sh
+
+      - name: Create images
+        run: sudo sh -e scripts/build_images.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: openstick-debian
+          path: files/*
+
+      - name: Create Release with gh CLI (alternative approach)
+        if: startsWith(github.ref, 'refs/tags/') && true
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "Release ${{ github.ref_name }}" \
+            --notes "Automated release for ${{ github.ref_name }}" \
+            files/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
