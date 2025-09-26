@@ -1,4 +1,4 @@
-name: Clone and Upload to Repository
+name: msm8916 clone
 
 on:
   workflow_dispatch:  # Allows manual triggering
@@ -28,8 +28,8 @@ jobs:
         
     - name: Prepare target repository
       run: |
-        # Remove existing files except .git folder
-        find . -name '.' ! -name '.git' ! -name 'source-repo' -exec rm -rf {} +
+        # Remove existing files except .git folder and source-repo
+        find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'source-repo' -exec rm -rf {} +
         
         # Copy all files from source repo (except .git folder)
         cp -r source-repo/* ./
@@ -45,5 +45,4 @@ jobs:
         git push
       
       env:
-        # You need to create a personal access token and add it as a secret
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
