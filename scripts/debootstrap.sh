@@ -97,5 +97,8 @@ echo "PARTUUID=80780b1d-0fe1-27d3-23e4-9244e62f8c46\t/boot\text2\tdefaults\t0 2"
 tar cpzf rootfs.tgz --exclude="usr/bin/qemu-aarch64-static" -C rootfs .
 
 cat <<EOF > ${CHROOT}/etc/resolv.conf
+nameserver 9.9.9.9
+nameserver 9.9.9.10
+nameserver 8.8.8.8
 nameserver 1.1.1.1
 EOF
