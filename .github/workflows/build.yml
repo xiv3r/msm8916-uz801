@@ -1,0 +1,49 @@
+name: Clone and Upload to Repository
+
+on:
+  workflow_dispatch:  # Allows manual triggering
+  push:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 1 * * *'  # Optional: run daily at midnight
+
+jobs:
+  clone-and-upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout current repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Clone source repository
+      run: |
+        git clone https://github.com/LongQT-sea/OpenStick-Builder.git source-repo
+        
+    - name: Set up Git config
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        
+    - name: Prepare target repository
+      run: |
+        # Remove existing files except .git folder
+        find . -name '.' ! -name '.git' ! -name 'source-repo' -exec rm -rf {} +
+        
+        # Copy all files from source repo (except .git folder)
+        cp -r source-repo/* ./
+        cp -r source-repo/.* . 2>/dev/null || true  # Copy hidden files, ignore errors
+        
+        # Remove the source-repo directory
+        rm -rf source-repo
+        
+    - name: Commit and push changes
+      run: |
+        git add -A
+        git diff --staged --quiet || git commit -m "Auto-update from OpenStick-Builder repository"
+        git push
+      
+      env:
+        # You need to create a personal access token and add it as a secret
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
