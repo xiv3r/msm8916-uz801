@@ -16,7 +16,8 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Clone source repository
       run: |
         git clone https://github.com/LongQT-sea/OpenStick-Builder.git source-repo
@@ -29,7 +30,7 @@ jobs:
     - name: Prepare target repository
       run: |
         # Remove existing files except .git folder and source-repo
-        find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'source-repo' -exec rm -rf {} +
+        find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'source-repo' ! -name '.github' -exec rm -rf {} +
         
         # Copy all files from source repo (except .git folder)
         cp -r source-repo/* ./
@@ -41,7 +42,7 @@ jobs:
     - name: Commit and push changes
       run: |
         git add -A
-        git diff --staged --quiet || git commit -m "Auto-update from OpenStick-Builder repository"
+        git diff --staged --quiet && echo "No changes to commit" || git commit -m "Auto-update from OpenStick-Builder repository"
         git push
       
       env:
