@@ -21,10 +21,9 @@ jobs:
     - name: Push to destination repository
       run: |
         cd temp-repo
-        # Use the correct PAT format - try both options:
-        
-        # Option 1: Using username/token format
-        git remote set-url origin https://xiv3r:${{ secrets.PAT_TOKEN }}@github.com/xiv3r/msm8916-uz801.git
+        # Remove existing origin and add new one with PAT
+        git remote remove origin
+        git remote add origin https://xiv3r:${{ secrets.PAT_TOKEN }}@github.com/xiv3r/msm8916-uz801.git
         
         # Push all branches and tags to destination
         git push origin --all --force
