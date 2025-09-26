@@ -1,15 +1,18 @@
 name: msm8916 clone
 
 on:
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
   push:
     branches: [ main, master ]
   schedule:
-    - cron: '0 1 * * *'  # Optional: run daily at midnight
+    - cron: '0 1 * * *'
 
 jobs:
   clone-and-upload:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write  # Explicitly grant write permissions
     
     steps:
     - name: Checkout current repository
@@ -29,14 +32,9 @@ jobs:
         
     - name: Prepare target repository
       run: |
-        # Remove existing files except .git folder and source-repo
         find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'source-repo' ! -name '.github' -exec rm -rf {} +
-        
-        # Copy all files from source repo (except .git folder)
         cp -r source-repo/* ./
-        cp -r source-repo/.* . 2>/dev/null || true  # Copy hidden files, ignore errors
-        
-        # Remove the source-repo directory
+        cp -r source-repo/.* . 2>/dev/null || true
         rm -rf source-repo
         
     - name: Commit and push changes
@@ -44,6 +42,3 @@ jobs:
         git add -A
         git diff --staged --quiet && echo "No changes to commit" || git commit -m "Auto-update from OpenStick-Builder repository"
         git push
-      
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
