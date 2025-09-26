@@ -1,11 +1,11 @@
 name: msm8916 clone
 
 on:
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
   push:
     branches: [ main, master ]
   schedule:
-    - cron: '0 1 * * *'  # Optional: run daily at midnight
+    - cron: '0 1 * * *'
 
 jobs:
   clone-and-upload:
@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        token: ${{ secrets.PAT }}  # Use PAT instead of GITHUB_TOKEN
+        token: ${{ secrets.PAT }}
 
     - name: Clone source repository
       run: |
@@ -26,24 +26,17 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
+        git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
         
     - name: Prepare target repository
       run: |
-        # Remove existing files except .git folder and source-repo
         find . -maxdepth 1 ! -name '.' ! -name '.git' ! -name 'source-repo' ! -name '.github' -exec rm -rf {} +
-        
-        # Copy all files from source repo (except .git folder)
         cp -r source-repo/* ./
-        cp -r source-repo/.* . 2>/dev/null || true  # Copy hidden files, ignore errors
-        
-        # Remove the source-repo directory
+        cp -r source-repo/.* . 2>/dev/null || true
         rm -rf source-repo
         
     - name: Commit and push changes
       run: |
         git add -A
         git diff --staged --quiet && echo "No changes to commit" || git commit -m "Auto-update from OpenStick-Builder repository"
-        git push origin HEAD:main
-        
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}  # Use PAT for pushing
+        git push
