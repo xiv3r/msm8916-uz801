@@ -1,29 +1,24 @@
-name: Sync Fork
+name: Fork Repository
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * 0'  # Weekly sync
-  push:
-    branches: [ main ]
+    - cron: '0 0 * * 0'
 
 jobs:
-  sync-fork:
+  fork-repo:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout current repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PAT_TOKEN }}
-        fetch-depth: 0
-        
-    - name: Add upstream repository
+    - name: Clone source repository
       run: |
-        git remote add upstream https://github.com/LongQT-sea/OpenStick-Builder.git
-        git fetch upstream
+        git clone --mirror https://github.com/LongQT-sea/OpenStick-Builder.git source-mirror
         
-    - name: Merge upstream changes
+    - name: Configure git
       run: |
+        cd source-mirror
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git merge upstream/main --allow-unrelated-histories
-        git push origin main
+        
+    - name: Push mirror to destination
+      run: |
+        cd source-mirror
+        git push --mirror https://xiv3r:${{ secrets.PAT_TOKEN }}@github.com/xiv3r/msm8916-uz801.git
