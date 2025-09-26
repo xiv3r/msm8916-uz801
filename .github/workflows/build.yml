@@ -1,8 +1,8 @@
 name: Sync Repository
 on:
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+    - cron: '0 0 * * *'
 
 jobs:
   sync-repo:
@@ -21,8 +21,10 @@ jobs:
     - name: Push to destination repository
       run: |
         cd temp-repo
-        # Set up the remote with PAT token
-        git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/xiv3r/msm8916-uz801.git
+        # Use the correct PAT format - try both options:
+        
+        # Option 1: Using username/token format
+        git remote set-url origin https://xiv3r:${{ secrets.PAT_TOKEN }}@github.com/xiv3r/msm8916-uz801.git
         
         # Push all branches and tags to destination
         git push origin --all --force
