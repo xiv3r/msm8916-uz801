@@ -8,11 +8,6 @@ jobs:
   sync-repo:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout current repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PAT_TOKEN }}
-        
     - name: Clone target repository
       run: |
         git clone https://github.com/LongQT-sea/OpenStick-Builder.git temp-repo
