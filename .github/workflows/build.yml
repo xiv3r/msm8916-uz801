@@ -16,7 +16,6 @@ jobs:
     - name: Clone target repository
       run: |
         git clone https://github.com/LongQT-sea/OpenStick-Builder.git temp-repo
-        cd temp-repo
         
     - name: Configure git
       run: |
@@ -27,9 +26,8 @@ jobs:
     - name: Push to destination repository
       run: |
         cd temp-repo
-        # Remove origin if it exists and add new origin with PAT
-        git remote remove origin 2>/dev/null || true
-        git remote add origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/xiv3r/msm8916-uz801.git
+        # Set up the remote with PAT token
+        git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/xiv3r/msm8916-uz801.git
         
         # Push all branches and tags to destination
         git push origin --all --force
