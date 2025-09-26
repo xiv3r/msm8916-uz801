@@ -12,6 +12,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Add upstream
       run: |
@@ -26,9 +27,16 @@ jobs:
     - name: Merge changes
       run: |
         # Check if we're behind upstream
-        if ! git merge-base --is-ancestor upstream/main HEAD; then
-          git merge upstream/main --no-edit
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
+        if ! git merge-base --is-ancestor upstream/main HEAD 2>/dev/null; then
+          # Try a regular merge first
+          if git merge upstream/main --no-edit; then
+            echo "Merge successful"
+          else
+            # If merge fails, try with --allow-unrelated-histories
+            echo "Regular merge failed, trying with unrelated histories"
+            git merge upstream/main --allow-unrelated-histories --no-edit
+          fi
+          git push origin main
         else
           echo "Already up to date."
         fi
